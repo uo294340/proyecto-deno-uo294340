@@ -1,0 +1,28 @@
+#le dice a GitHub que pasos seguir para ejecutar la pipeline
+name: Pipeline UO294340
+
+on: [push] # Se ejecuta cada vez que subes algo
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Instalar Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: 1. Ejecutar Análisis Estático (Linter)
+        run: deno lint
+
+      - name: 2. Ejecutar Pruebas
+        run: deno test > reporte.txt
+
+      - name: 3. Mostrar Reporte de Ejecución
+        run: cat reporte.txt
+
+      - name: 4. Construir Contenedor (Docker)
+        run: docker build -t mi-app-deno .
